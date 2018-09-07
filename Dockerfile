@@ -1,5 +1,5 @@
 FROM nginx:1.15.2
-MAINTAINER NGINX Amplify Engineering
+MAINTAINER Thomas Ebenrett <thomas@thomasebenrett.de>
 
 # Install the NGINX Amplify Agent
 RUN apt-get update \
