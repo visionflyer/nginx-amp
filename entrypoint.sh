@@ -1,17 +1,5 @@
 #!/bin/sh
-#
-# This script launches nginx and the NGINX Amplify Agent.
-#
-# Unless already baked in the image, a real API_KEY is required for the
-# NGINX Amplify Agent to be able to connect to the backend.
-#
-# If AMPLIFY_IMAGENAME is set, the script will use it to generate
-# the 'imagename' to put in the /etc/amplify-agent/agent.conf
-#
-# If several instances use the same imagename, the metrics will
-# be aggregated into a single object in Amplify. Otherwise NGINX Amplify
-# will create separate objects for monitoring (an object per instance).
-#
+
 
 # Variables
 agent_conf_file="/etc/amplify-agent/agent.conf"
