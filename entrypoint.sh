@@ -1,6 +1,5 @@
 #!/bin/sh
 
-
 # Variables
 agent_conf_file="/etc/amplify-agent/agent.conf"
 agent_log_file="/var/log/amplify-agent/agent.log"
