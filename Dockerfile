@@ -24,6 +24,9 @@ COPY ./conf.d/stub_status.conf /etc/nginx/conf.d
 # Copy nginx default config
 COPY ./conf.d/default.conf /etc/nginx/conf.d
 
+#Stream conf
+RUN mkdir -p /etc/nginx/streamconf.d
+
 # API_KEY is required for configuring the NGINX Amplify Agent.
 # It could be your real API key for NGINX Amplify here if you wanted
 # to build your own image to host it in a private registry.
