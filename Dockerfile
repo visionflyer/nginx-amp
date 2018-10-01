@@ -26,6 +26,10 @@ COPY ./conf.d/default.conf /etc/nginx/conf.d
 
 #Stream conf
 RUN mkdir -p /etc/nginx/streamconf.d
+RUN echo " \
+stream { \
+	include /etc/nginx/streamconf.d/*; \
+}" >> /etc/nginx/nginx.conf
 
 # API_KEY is required for configuring the NGINX Amplify Agent.
 # It could be your real API key for NGINX Amplify here if you wanted

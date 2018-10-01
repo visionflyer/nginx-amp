@@ -10,13 +10,6 @@ https_proxy_ip=""
 https_proxy_port=""
 
 
-# include streamconf.d in nginx.conf
-
-echo "
-stream { 
-	include /etc/nginx/streamconf.d/*;
-}" >> /etc/nginx/nginx.conf
-cat /etc/nginx/nginx.conf
 # Launch nginx
 echo "starting nginx ..."
 nginx -g "daemon off;" &
