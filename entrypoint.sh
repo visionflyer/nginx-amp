@@ -36,11 +36,16 @@ test -n "${HTTPS_PROXY_PORT}" && \
 test -n "${NGINX_AUTO_RELOAD_CRON_MINUTES}" && \
     nginx_auto_reload_cron_minutes=${NGINX_AUTO_RELOAD_CRON_MINUTES}
 
-if[[ -z $nginx_auto_reload_cron_minutes && ${nginx_auto_reload_cron_minutes+x}]];
-	then
-	sh -c 'echo "*/${NGINX_AUTO_RELOAD_CRON_MINUTES} * * * * nginx -s reload" | crontab'
+echo "nginx_auto_reload_cron_minutes ${nginx_auto_reload_cron_minutes}"
+
+if [ -z "${nginx_auto_reload_cron_minutes}" ]; then
+    	echo "deleting nginx cron reload cycle" 
+    	sh -c 'crontab -r'
+	
 	else
-	sh -c 'echo "" | crontab'
+	   echo "setting nginx cron reload cycle to ${nginx_auto_reload_cron_minutes} minutes" 
+ 	   sh -c "echo '*/${nginx_auto_reload_cron_minutes} * * * * nginx -s reload > /dev/null 2>&1' | crontab"
+	   
 fi
 
 
