@@ -8,7 +8,7 @@ api_key=""
 amplify_imagename=""
 https_proxy_ip=""
 https_proxy_port=""
-
+nginx_auto_reload_cron_minutes=""
 
 # Launch nginx
 echo "starting nginx ..."
@@ -16,6 +16,7 @@ nginx -g "daemon off;" &
 
 
 nginx_pid=$!
+
 
 if [ "$1" = 'amplify' ]; then
 echo "Starte mit amplify"
@@ -31,6 +32,17 @@ test -n "${HTTPS_PROXY_IP}" && \
 
 test -n "${HTTPS_PROXY_PORT}" && \
     https_proxy_port=${HTTPS_PROXY_PORT}
+
+test -n "${NGINX_AUTO_RELOAD_CRON_MINUTES}" && \
+    nginx_auto_reload_cron_minutes=${NGINX_AUTO_RELOAD_CRON_MINUTES}
+
+if[[ -z $nginx_auto_reload_cron_minutes && ${nginx_auto_reload_cron_minutes+x}]]
+	then
+	sh -c 'echo "*/${NGINX_AUTO_RELOAD_CRON_MINUTES} * * * * nginx -s reload" | crontab'
+	else
+	sh -c 'echo "" | crontab'
+fi
+
 
 if [ -n "${api_key}" -o -n "${amplify_imagename}" ]; then
     echo "updating ${agent_conf_file} ..."
