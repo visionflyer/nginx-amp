@@ -36,7 +36,7 @@ test -n "${HTTPS_PROXY_PORT}" && \
 test -n "${NGINX_AUTO_RELOAD_CRON_MINUTES}" && \
     nginx_auto_reload_cron_minutes=${NGINX_AUTO_RELOAD_CRON_MINUTES}
 
-if[[ -z $nginx_auto_reload_cron_minutes && ${nginx_auto_reload_cron_minutes+x}]]
+if[[ -z $nginx_auto_reload_cron_minutes && ${nginx_auto_reload_cron_minutes+x}]];
 	then
 	sh -c 'echo "*/${NGINX_AUTO_RELOAD_CRON_MINUTES} * * * * nginx -s reload" | crontab'
 	else
