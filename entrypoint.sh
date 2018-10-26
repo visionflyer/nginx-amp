@@ -9,6 +9,11 @@ amplify_imagename=""
 https_proxy_ip=""
 https_proxy_port=""
 nginx_auto_reload_cron_minutes=""
+self_signed_issuer=""
+
+echo "generating self signed certs"
+
+sh -c "openssl req -subj '/CN=localhost' -x509 -newkey rsa:4096 -nodes -keyout /etc/ssl/certs/self-key.pem -out /etc/ssl/certs/self-cert.pem -days 3650"
 
 # Launch nginx
 echo "starting nginx ..."
