@@ -10,18 +10,23 @@ https_proxy_ip=""
 https_proxy_port=""
 nginx_auto_reload_cron_minutes=""
 self_signed_issuer=""
-
+self_signed_dir="/etc/ssl/certs"
 
 
 test -n "${SELF_SIGNED_ISSUER_URL}" && \
     self_signed_issuer=${SELF_SIGNED_ISSUER_URL}
 
+test -n "${SELF_SIGNED_DIR}" && \
+    self_signed_dir=${SELF_SIGNED_DIR}
+
 if [ -z "${self_signed_issuer}" ]; then
 
 	echo "nothing"
 	else
+	   echo "creating Directory for certs: ${self_signed_dir}"
+	   sh -c "mkdir -p ${self_signed_dir}"
        echo "generating self signed certs for issurer ${self_signed_issuer} "
-       sh -c "openssl req -subj '/CN=${self_signed_issuer}' -x509 -newkey rsa:4096 -nodes -keyout /etc/ssl/certs/self-key.pem -out /etc/ssl/certs/self-cert.pem -days 3650"
+       sh -c "openssl req -subj '/CN=${self_signed_issuer}' -x509 -newkey rsa:4096 -nodes -keyout ${self_signed_dir}/self-key.pem -out ${self_signed_dir}/self-cert.pem -days 3650"
 fi
 
 # Launch nginx
