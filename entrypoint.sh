@@ -11,9 +11,18 @@ https_proxy_port=""
 nginx_auto_reload_cron_minutes=""
 self_signed_issuer=""
 
-echo "generating self signed certs"
 
-sh -c "openssl req -subj '/CN=localhost' -x509 -newkey rsa:4096 -nodes -keyout /etc/ssl/certs/self-key.pem -out /etc/ssl/certs/self-cert.pem -days 3650"
+
+test -n "${SELF_SIGNED_ISSUER_URL}" && \
+    self_signed_issuer=${SELF_SIGNED_ISSUER_URL}
+
+if [ -z "${self_signed_issuer}" ]; then
+
+	echo "nothing"
+	else
+       echo "generating self signed certs for issurer ${self_signed_issuer} "
+       sh -c "openssl req -subj '/CN=${self_signed_issuer}' -x509 -newkey rsa:4096 -nodes -keyout /etc/ssl/certs/self-key.pem -out /etc/ssl/certs/self-cert.pem -days 3650"
+fi
 
 # Launch nginx
 echo "starting nginx ..."
