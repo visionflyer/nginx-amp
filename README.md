@@ -30,7 +30,7 @@ To set a custom Directory to save the self-cert.pem and self-key.pem (SELF_SIGEN
 * SELF_SIGNED_DIR
 
 
-# Full exymple to run
+# Full example to run
 
 ```bash
 docker run -p 9100:80 --name nginx-amp -e API_KEY=yourKey -e AMPLIFY_IMAGENAME=nginx_with_amp -e HTTPS_PROXY_IP=yourProxyIp -e HTTPS_PROXY_PORT=yourProxyPort -e SELF_SIGNED_ISSUER_URL=example.com -e -e SELF_SIGNED_DIR=/var/www/certs visionflyer/nginx-amp amplify
