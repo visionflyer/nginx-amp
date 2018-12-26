@@ -1,6 +1,6 @@
 # NGiNX with amplify?
 
-This Image is providing nginx:1.15.2 and Amplify Agent. 
+This Image is providing nginx:1.15.7 with Amplify Agent, node and npm. 
 
 # Use Amplifiy
 
@@ -12,12 +12,12 @@ You have to set the following environment Variables:
 
 # Use Proxy
 
-Use behind a corporate proxy with the environment Variables:
+Use amplify behind a corporate proxy with the environment Variables:
 
 * HTTPS_PROXY_IP - IP Adress of proxy
 * HTTPS_PROXY_PORT - Port of proxy
 
-# Use a self signed certificate
+# Use a self signed certificate on the default 443 Server
 
 To generate a self signed certificate in:
 
