@@ -37,6 +37,16 @@ if [ -z "${self_signed_force_new}" ]; then
       	   sh -c "openssl req -subj '/CN=${self_signed_issuer}' -x509 -newkey rsa:4096 -nodes -keyout ${self_signed_dir}/self-key.pem -out ${self_signed_dir}/self-cert.pem -days 3650"
 	fi
 fi
+
+# Launch Logrotate
+echo "starting logrotate"
+
+service cron start > /dev/null 2>&1 < /dev/null
+
+if [ $? != 0 ]; then
+    echo "couldn't start cron service"
+fi
+
 # Launch nginx
 echo "starting nginx ..."
 nginx -g "daemon off;" &
