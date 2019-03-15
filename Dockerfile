@@ -1,4 +1,4 @@
-FROM nginx:1.15.7
+FROM nginx:1.15.9
 MAINTAINER Thomas Ebenrett <thomas@thomasebenrett.de>
 
 # Install the NGINX Amplify Agent
