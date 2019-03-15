@@ -1,6 +1,6 @@
 # NGiNX with amplify?
 
-This Image is providing nginx:1.15.7 with Amplify Agent, node and npm. 
+This Image is providing nginx:1.15.9 with Amplify Agent, node and npm. 
 
 # Use Amplifiy
 
