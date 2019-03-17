@@ -27,7 +27,7 @@ COPY ./conf.d/stub_status.conf /etc/nginx/conf.d
 # Copy nginx default config
 COPY ./conf.d/default.conf /etc/nginx/conf.d
 # Copy nginx default certs
-COPY  ./conf.d/*.pem /var/www/certs
+COPY  ./conf.d/*.pem /var/www/certs/
 
 #Stream conf
 RUN mkdir -p /etc/nginx/streamconf.d
