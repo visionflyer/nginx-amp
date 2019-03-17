@@ -3,7 +3,10 @@
 # Variables
 agent_conf_file="/etc/amplify-agent/agent.conf"
 agent_log_file="/var/log/amplify-agent/agent.log"
+nginx_conf_file="/etc/nginx/conf.d/default.conf"
+
 nginx_status_conf="/etc/nginx/conf.d/stub_status.conf"
+
 api_key=""
 amplify_imagename=""
 https_proxy_ip=""
@@ -29,22 +32,42 @@ if [ -z "${self_signed_force_new}" ]; then
 
 	if [ -z "${self_signed_issuer}" ]; then
 
-		echo "self_signer_issuer not set"
+		echo "self_signed_issuer not set"
 		else
 		   echo "creating Directory for certs: ${self_signed_dir}"
 		   sh -c "mkdir -p ${self_signed_dir}"
    	       echo "generating self signed certs for issurer ${self_signed_issuer} "
       	   sh -c "openssl req -subj '/CN=${self_signed_issuer}' -x509 -newkey rsa:4096 -nodes -keyout ${self_signed_dir}/self-key.pem -out ${self_signed_dir}/self-cert.pem -days 3650"
+  		
+
+          echo " ---> setting ssl conf in $nginx_conf_file" && \
+          sh -c "sed -i.old -e 's/ssl_certificate.*$/ssl_certificate ${self_signed_dir}/self-cert.pem' \
+          ${nginx_conf_file}"
+
+          echo " ---> setting ssl conf in $nginx_conf_file" && \
+          sh -c "sed -i.old -e 's/ssl_certificate_key.*$/ssl_certificate_key ${self_signed_dir}/self-key.pem' \
+          ${nginx_conf_file}"
+
 	fi
 fi
 
 # Launch Logrotate
-echo "starting logrotate"
+echo "starting cron/logrotate"
 
 service cron start > /dev/null 2>&1 < /dev/null
 
 if [ $? != 0 ]; then
     echo "couldn't start cron service"
+fi
+
+echo "testing nginx conf"
+
+nginx -t > /dev/null 2>&1 < /dev/null
+
+if [ $? != 0 ]; then
+    echo "couldn't start nginx"
+    echo $?
+    exit 1
 fi
 
 # Launch nginx
@@ -143,7 +166,7 @@ if [ $? != 0 ]; then
     exit 1
 fi
 else
-echo "Starte ohne amplify"
+echo "starting without amplify"
 
 fi
 wait ${nginx_pid}
