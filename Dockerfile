@@ -37,4 +37,6 @@ stream { \
 
 COPY ./nginx /etc/logrotate.d/
 COPY ./entrypoint.sh /entrypoint.sh
+EXPOSE 80
+EXPOSE 443
 ENTRYPOINT ["/entrypoint.sh"]
