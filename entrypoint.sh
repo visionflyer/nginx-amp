@@ -40,11 +40,12 @@ if [ -z "${self_signed_force_new}" ]; then
       	   sh -c "openssl req -subj '/CN=${self_signed_issuer}' -x509 -newkey rsa:4096 -nodes -keyout ${self_signed_dir}/self-key.pem -out ${self_signed_dir}/self-cert.pem -days 3650"
   		
 
-          echo " ---> setting ssl conf in ${nginx_conf_file}" && \
+          echo " ---> setting self-cert.pem in ${nginx_conf_file}" && \
           sh -c "sed -i.old -e 's|ssl_certificate .*|ssl_certificate ${self_signed_dir}/self-cert.pem;|' \
           ${nginx_conf_file}"
 
-          echo " ---> setting ssl conf in ${nginx_conf_file}" && \
+
+          echo " ---> setting self-key.pem in ${nginx_conf_file}" && \
           sh -c "sed -i.old -e 's|ssl_certificate_key .*|ssl_certificate_key ${self_signed_dir}/self-key.pem;|' \
           ${nginx_conf_file}"
 
