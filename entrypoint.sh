@@ -40,16 +40,18 @@ if [ -z "${self_signed_force_new}" ]; then
       	   sh -c "openssl req -subj '/CN=${self_signed_issuer}' -x509 -newkey rsa:4096 -nodes -keyout ${self_signed_dir}/self-key.pem -out ${self_signed_dir}/self-cert.pem -days 3650"
   		
 
-          echo " ---> setting ssl conf in $nginx_conf_file" && \
-          sh -c "sed -i.old -e 's/ssl_certificate.*$/ssl_certificate ${self_signed_dir}/self-cert.pem' \
+          echo " ---> setting ssl conf in ${nginx_conf_file}" && \
+          sh -c "sed -i.old -e 's|ssl_certificate .*|ssl_certificate ${self_signed_dir}/self-cert.pem;|' \
           ${nginx_conf_file}"
 
-          echo " ---> setting ssl conf in $nginx_conf_file" && \
-          sh -c "sed -i.old -e 's/ssl_certificate_key.*$/ssl_certificate_key ${self_signed_dir}/self-key.pem' \
+          echo " ---> setting ssl conf in ${nginx_conf_file}" && \
+          sh -c "sed -i.old -e 's|ssl_certificate_key .*|ssl_certificate_key ${self_signed_dir}/self-key.pem;|' \
           ${nginx_conf_file}"
 
 	fi
 fi
+
+#sh -c "cat /etc/nginx/conf.d/default.conf"
 
 # Launch Logrotate
 echo "starting cron/logrotate"
@@ -66,7 +68,7 @@ nginx -t > /dev/null 2>&1 < /dev/null
 
 if [ $? != 0 ]; then
     echo "couldn't start nginx"
-    echo $?
+    nginx -t
     exit 1
 fi
 
