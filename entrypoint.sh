@@ -25,6 +25,18 @@ test -n "${SELF_SIGNED_DIR}" && \
 test -n "${SELF_SIGNED_FORCE_NEW}" && \
     self_signed_force_new=${SELF_SIGNED_FORCE_NEW}
 
+if [ "$self_signed_force_new" = 'true' ]; then
+   echo "true"
+fi
+
+if [ "$self_signed_force_new" = 'false' ]; then
+   echo "false"
+fi
+
+if [ "$self_signed_force_new" = 'once' ]; then
+   echo "once"
+fi
+
 if [ -z "${self_signed_force_new}" ]; then
 
 	echo "no cert generation"
