@@ -25,8 +25,8 @@ test -n "${SELF_SIGNED_DIR}" && \
 test -n "${SELF_SIGNED_FORCE_NEW}" && \
     self_signed_force_new=${SELF_SIGNED_FORCE_NEW}
 
-if [ "$self_signed_force_new" = 'true' ]; then
-   echo "true"
+if [ "$self_signed_force_new" = 'always' ]; then
+   echo "always"
 fi
 
 if [ "$self_signed_force_new" = 'false' ]; then
