@@ -4,17 +4,33 @@
 agent_conf_file="/etc/amplify-agent/agent.conf"
 agent_log_file="/var/log/amplify-agent/agent.log"
 nginx_conf_file="/etc/nginx/conf.d/default.conf"
-
 nginx_status_conf="/etc/nginx/conf.d/stub_status.conf"
+
+
 
 api_key=""
 amplify_imagename=""
 https_proxy_ip=""
 https_proxy_port=""
 nginx_auto_reload_cron_minutes=""
-self_signed_issuer=""
+self_signed_issuer="default.not"
 self_signed_dir="/etc/ssl/certs"
 self_signed_force_new=""
+self_signed_once="/selfsigned_once.txt"
+self_signed_default="/selfsigned_default.txt"
+self_sign="false"
+
+### default ssl generation (once)
+
+    if [ ! -f "${self_signed_default}" ]; then
+     echo "generating default cert"
+     echo "creating Directory for certs: ${self_signed_dir}"
+	 sh -c "mkdir -p ${self_signed_dir}"
+   	 echo "generating default self signed certs"
+     sh -c "openssl req -subj '/CN=${self_signed_issuer}' -x509 -newkey rsa:4096 -nodes -keyout ${self_signed_dir}/self-key.pem -out ${self_signed_dir}/self-cert.pem -days 3650"
+     sh -c "touch ${self_signed_default}"
+    fi
+
 
 test -n "${SELF_SIGNED_ISSUER_URL}" && \
     self_signed_issuer=${SELF_SIGNED_ISSUER_URL}
@@ -25,30 +41,37 @@ test -n "${SELF_SIGNED_DIR}" && \
 test -n "${SELF_SIGNED_FORCE_NEW}" && \
     self_signed_force_new=${SELF_SIGNED_FORCE_NEW}
 
-if [ "$self_signed_force_new" = 'always' ]; then
-   echo "always"
-fi
 
-if [ "$self_signed_force_new" = 'false' ]; then
-   echo "false"
-fi
 
-if [ "$self_signed_force_new" = 'once' ]; then
-   echo "once"
-fi
+
 
 if [ -z "${self_signed_force_new}" ]; then
 
-	echo "no cert generation"
+	echo "no cert generation, using default"
 	else
+# if true -> generate new
+	if [ "$self_signed_force_new" = 'true' ]; then
+        self_sign="true"
+    fi  
 
+# if once and never done -> generate new
+	if [ "$self_signed_force_new" = 'once' ]; then
+	    if [ ! -f "${self_signed_once}" ]; then
+          self_sign="true"
+	    fi
+    fi 
+fi
+
+
+if [ "$self_sign" = 'true' ]; then
+	
 	if [ -z "${self_signed_issuer}" ]; then
 
 		echo "self_signed_issuer not set"
 		else
 		   echo "creating Directory for certs: ${self_signed_dir}"
 		   sh -c "mkdir -p ${self_signed_dir}"
-   	       echo "generating self signed certs for issurer ${self_signed_issuer} "
+   	       echo "generating self signed certs for issuer ${self_signed_issuer} "
       	   sh -c "openssl req -subj '/CN=${self_signed_issuer}' -x509 -newkey rsa:4096 -nodes -keyout ${self_signed_dir}/self-key.pem -out ${self_signed_dir}/self-cert.pem -days 3650"
   		
 
@@ -60,11 +83,13 @@ if [ -z "${self_signed_force_new}" ]; then
           echo " ---> setting self-key.pem in ${nginx_conf_file}" && \
           sh -c "sed -i.old -e 's|ssl_certificate_key .*|ssl_certificate_key ${self_signed_dir}/self-key.pem;|' \
           ${nginx_conf_file}"
+          sh -c "touch ${self_signed_once}"
+
 
 	fi
 fi
 
-#sh -c "cat /etc/nginx/conf.d/default.conf"
+
 
 # Launch Logrotate
 echo "starting cron/logrotate"
