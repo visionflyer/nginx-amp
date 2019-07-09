@@ -1,0 +1,18 @@
+version: '2.0'
+services:
+  nginx:
+    container_name: nginx
+    build: .
+#    command: amplify
+    ports:
+     - 31234:80
+    environment:
+     - NGINX_WORKER_PROCESSES=2
+     - SELF_SIGNED_ISSUER_URL=example.org
+     - SELF_SIGNED_DIR=/etc/nginx/custcert
+     # - AMPLIFY_IMAGENAME=nginx
+     # - HTTPS_PROXY_IP=someIp
+     # - HTTPS_PROXY_PORT=somePort
+     # - NGINX_AUTO_RELOAD_CRON_MINUTES=2
+     # - API_KEY=yourAmplifyApiKeyHere
+     - SELF_SIGNED_FORCE_NEW=once
