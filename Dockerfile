@@ -19,7 +19,9 @@ RUN unlink /var/log/nginx/access.log \
     && touch /var/log/nginx/access.log \
     && touch /var/log/nginx/error.log \
     && chown nginx /var/log/nginx/*log \
-    && chmod 644 /var/log/nginx/*log
+    && chmod 644 /var/log/nginx/*log \
+    && ln -sf /dev/stdout /var/log/amplify-agent/agent.log
+
 
 # Copy nginx stub_status config
 COPY ./conf.d/stub_status.conf /etc/nginx/conf.d
