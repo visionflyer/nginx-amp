@@ -117,6 +117,24 @@ nginx -g "daemon off;" &
 
 nginx_pid=$!
 
+echo "starting sshd ..."
+
+/etc/init.d/ssh start
+
+test -n "${NGINX_AUTO_RELOAD_CRON_MINUTES}" && \
+    nginx_auto_reload_cron_minutes=${NGINX_AUTO_RELOAD_CRON_MINUTES}
+
+echo "nginx_auto_reload_cron_minutes ${nginx_auto_reload_cron_minutes}"
+
+if [ -z "${nginx_auto_reload_cron_minutes}" ]; then
+    	echo "deleting nginx cron reload cycle" 
+    	sh -c 'crontab -r'
+	
+	else
+	   echo "setting nginx cron reload cycle to ${nginx_auto_reload_cron_minutes} minutes" 
+ 	   sh -c "echo '*/${nginx_auto_reload_cron_minutes} * * * * nginx -s reload > /dev/null 2>&1' | crontab"
+	   
+fi
 
 if [ "$1" = 'amplify' ]; then
 echo "Starte mit amplify"
@@ -133,20 +151,6 @@ test -n "${HTTPS_PROXY_IP}" && \
 test -n "${HTTPS_PROXY_PORT}" && \
     https_proxy_port=${HTTPS_PROXY_PORT}
 
-test -n "${NGINX_AUTO_RELOAD_CRON_MINUTES}" && \
-    nginx_auto_reload_cron_minutes=${NGINX_AUTO_RELOAD_CRON_MINUTES}
-
-echo "nginx_auto_reload_cron_minutes ${nginx_auto_reload_cron_minutes}"
-
-if [ -z "${nginx_auto_reload_cron_minutes}" ]; then
-    	echo "deleting nginx cron reload cycle" 
-    	sh -c 'crontab -r'
-	
-	else
-	   echo "setting nginx cron reload cycle to ${nginx_auto_reload_cron_minutes} minutes" 
- 	   sh -c "echo '*/${nginx_auto_reload_cron_minutes} * * * * nginx -s reload > /dev/null 2>&1' | crontab"
-	   
-fi
 
 
 if [ -n "${api_key}" -o -n "${amplify_imagename}" ]; then
