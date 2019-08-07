@@ -1,11 +1,12 @@
-version: '2.0'
+version: '2.1'
 services:
   nginx:
     container_name: nginx
     build: .
 #    command: amplify
     ports:
-     - 31234:80
+     - '9001:22'
+     - '9002:80'
     environment:
      - NGINX_WORKER_PROCESSES=2
      - SELF_SIGNED_ISSUER_URL=example.org
@@ -13,6 +14,9 @@ services:
      # - AMPLIFY_IMAGENAME=nginx
      # - HTTPS_PROXY_IP=someIp
      # - HTTPS_PROXY_PORT=somePort
-     # - NGINX_AUTO_RELOAD_CRON_MINUTES=2
+     - NGINX_AUTO_RELOAD_CRON_MINUTES=2
      # - API_KEY=yourAmplifyApiKeyHere
      - SELF_SIGNED_FORCE_NEW=once
+     - SSH_ENABLED=true
+     - SSH_USER=thomas
+     - SSH_PASSWD=test

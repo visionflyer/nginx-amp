@@ -19,6 +19,9 @@ self_signed_force_new=""
 self_signed_once="/selfsigned_once.txt"
 self_signed_default="/selfsigned_default.txt"
 self_sign="false"
+ssh_enabled="false"
+ssh_user="sshuser"
+ssh_passwd="passwd"
 
 ### default ssl generation (once)
 
@@ -117,9 +120,38 @@ nginx -g "daemon off;" &
 
 nginx_pid=$!
 
-echo "starting sshd ..."
 
-/etc/init.d/ssh start
+### ssh config
+test -n "${SSH_ENABLED}" && \
+    ssh_enabled=${SSH_ENABLED}
+
+if [ "$ssh_enabled" = 'true' ]; then
+  echo " "
+  echo " "
+
+  echo "##### starting sshd #####"
+  
+  test -n "${SSH_USER}" && \
+    ssh_user=${SSH_USER}
+  
+  test -n "${SSH_PASSWD}" && \
+    ssh_passwd=${SSH_PASSWD}
+      
+  sh -c "adduser --quiet --disabled-password --shell /bin/bash --home /home/${ssh_user} --gecos 'User' ${ssh_user}"
+  
+#  sh -c "adduser --quiet --disabled-password --shell /bin/bash --home /home/${ssh_user} --gecos 'User' ${ssh_user}"
+  echo -e "${ssh_passwd}\n${ssh_passwd}" | (passwd -q ${ssh_user} > /dev/null 2>&1) 
+  usermod -aG sudo ${ssh_user}
+  /etc/init.d/ssh start
+  
+  echo "log in using ssh with:"
+  echo "   user: ${ssh_user}"
+  echo "   password: ${ssh_passwd}"
+  echo "#####              #####"
+  echo " "
+  echo " "
+fi
+
 
 test -n "${NGINX_AUTO_RELOAD_CRON_MINUTES}" && \
     nginx_auto_reload_cron_minutes=${NGINX_AUTO_RELOAD_CRON_MINUTES}
