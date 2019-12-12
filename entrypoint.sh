@@ -19,6 +19,9 @@ self_signed_force_new=""
 self_signed_once="/selfsigned_once.txt"
 self_signed_default="/selfsigned_default.txt"
 self_sign="false"
+ssh_enabled="false"
+ssh_user="sshuser"
+ssh_passwd="passwd"
 
 ### default ssl generation (once)
 
@@ -118,20 +121,37 @@ nginx -g "daemon off;" &
 nginx_pid=$!
 
 
-if [ "$1" = 'amplify' ]; then
-echo "Starte mit amplify"
+### ssh config
+test -n "${SSH_ENABLED}" && \
+    ssh_enabled=${SSH_ENABLED}
 
-test -n "${API_KEY}" && \
-    api_key=${API_KEY}
+if [ "$ssh_enabled" = 'true' ]; then
+  echo " "
+  echo " "
 
-test -n "${AMPLIFY_IMAGENAME}" && \
-    amplify_imagename=${AMPLIFY_IMAGENAME}
+  echo "##### starting sshd #####"
+  
+  test -n "${SSH_USER}" && \
+    ssh_user=${SSH_USER}
+  
+  test -n "${SSH_PASSWD}" && \
+    ssh_passwd=${SSH_PASSWD}
+      
+  sh -c "adduser --quiet --disabled-password --shell /bin/bash --home /home/${ssh_user} --gecos 'User' ${ssh_user}"
+  
+#  sh -c "adduser --quiet --disabled-password --shell /bin/bash --home /home/${ssh_user} --gecos 'User' ${ssh_user}"
+  echo -e "${ssh_passwd}\n${ssh_passwd}" | (passwd -q ${ssh_user} > /dev/null 2>&1) 
+  usermod -aG sudo ${ssh_user}
+  /etc/init.d/ssh start
+  
+  echo "log in using ssh with:"
+  echo "   user: ${ssh_user}"
+  echo "   password: ${ssh_passwd}"
+  echo "#####              #####"
+  echo " "
+  echo " "
+fi
 
-test -n "${HTTPS_PROXY_IP}" && \
-    https_proxy_ip=${HTTPS_PROXY_IP}
-
-test -n "${HTTPS_PROXY_PORT}" && \
-    https_proxy_port=${HTTPS_PROXY_PORT}
 
 test -n "${NGINX_AUTO_RELOAD_CRON_MINUTES}" && \
     nginx_auto_reload_cron_minutes=${NGINX_AUTO_RELOAD_CRON_MINUTES}
@@ -147,6 +167,22 @@ if [ -z "${nginx_auto_reload_cron_minutes}" ]; then
  	   sh -c "echo '*/${nginx_auto_reload_cron_minutes} * * * * nginx -s reload > /dev/null 2>&1' | crontab"
 	   
 fi
+
+if [ "$1" = 'amplify' ]; then
+echo "Starte mit amplify"
+
+test -n "${API_KEY}" && \
+    api_key=${API_KEY}
+
+test -n "${AMPLIFY_IMAGENAME}" && \
+    amplify_imagename=${AMPLIFY_IMAGENAME}
+
+test -n "${HTTPS_PROXY_IP}" && \
+    https_proxy_ip=${HTTPS_PROXY_IP}
+
+test -n "${HTTPS_PROXY_PORT}" && \
+    https_proxy_port=${HTTPS_PROXY_PORT}
+
 
 
 if [ -n "${api_key}" -o -n "${amplify_imagename}" ]; then
