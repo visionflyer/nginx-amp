@@ -1,6 +1,6 @@
 # NGiNX with amplify
 
-This Image is providing nginx:1.17.1 with Amplify Agent 
+This Image is providing nginx:latest with Amplify Agent 
 
 # Use Amplifiy
 
