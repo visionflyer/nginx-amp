@@ -2,7 +2,7 @@
         daily
         missingok
         rotate 31
-        size 5 MB
+        size 5M
         compress
         delaycompress
         notifempty
