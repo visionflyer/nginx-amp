@@ -1,5 +1,5 @@
 FROM nginx:latest
-MAINTAINER Thomas Ebenrett <thomas@thomasebenrett.de>
+MAINTAINER Thomas Ebenrett <thomas@herrderzeit.de>
 
 # Install the NGINX Amplify Agent
 RUN apt-get update \
